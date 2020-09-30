@@ -37,7 +37,7 @@ def create_file(filename="./tempfile", size="1m"):
 
 def create_files(filename_prefix="tempfile", size="1m", n=1):
     filenames = []
-    for i in range(n):
+    for i in range(n) :
         filenames.append(create_file(filename=f"{filename_prefix}_{size}_{i}", size=size))
     return filenames
 
@@ -61,16 +61,17 @@ def run_case(filenames, size, n, src, dst):
 def main():
     output_file = "timing_output.csv"
     cases = [
-        {'size': '1k', 'n': 1000, 'tenant': 'minimal-tenant1'},
+#         {'size': '1k', 'n': 200, 'tenant': 'minimal-tenant1'},  # Broke when copying minio->minio with 'Input/output error', on the second file once, then worked perfectly another time
+#         {'size': '1k', 'n': 1000, 'tenant': 'minimal-tenant1'},  # Breaks when copying minio->minio with 'Input/output error', generally on the first file
         {'size': '1m', 'n': 100, 'tenant': 'minimal-tenant1'},
-#         {'size': '10m', 'n': 10, 'tenant': 'minimal-tenant1'},
-#         {'size': '100m', 'n': 10, 'tenant': 'minimal-tenant1'},
-#         {'size': '1g', 'n': 5, 'tenant': 'minimal-tenant1'},
-#         {'size': '1k', 'n': 100, 'tenant': 'premium-tenant1'},
-#         {'size': '1m', 'n': 100, 'tenant': 'premium-tenant1'},
-#         {'size': '10m', 'n': 10, 'tenant': 'premium-tenant1'},
-#         {'size': '100m', 'n': 10, 'tenant': 'premium-tenant1'},
-#         {'size': '1g', 'n': 5, 'tenant': 'premium-tenant1'},
+        {'size': '10m', 'n': 10, 'tenant': 'minimal-tenant1'},
+        {'size': '100m', 'n': 10, 'tenant': 'minimal-tenant1'},
+        {'size': '1g', 'n': 5, 'tenant': 'minimal-tenant1'},
+#         {'size': '1k', 'n': 1000, 'tenant': 'premium-tenant1'},
+        {'size': '1m', 'n': 100, 'tenant': 'premium-tenant1'},
+        {'size': '10m', 'n': 10, 'tenant': 'premium-tenant1'},
+        {'size': '100m', 'n': 10, 'tenant': 'premium-tenant1'},
+        {'size': '1g', 'n': 5, 'tenant': 'premium-tenant1'},
     ]
 
     results = []
@@ -111,8 +112,10 @@ def main():
 
         # Cleanup files
         for d in all_directories:
-            for f in filenames:
-                subprocess.run(["rm", f"{d}{f}"])
+            subprocess.run(["rm", "-r", f"{d}"])
+#             for f in filenames:
+#                 cmd = ["rm", f"{d}{f}"]
+#                 subprocess.run(cmd)
 
         # Write current results (so we can easily monitor progress - a little wasteful but whatever...)
         current_results = pd.DataFrame(results)
